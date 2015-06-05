@@ -5,6 +5,8 @@ import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
+
 import segmentation.AbstractTopicShiftSampler;
 import segmentation.TopicSegmentation;
 import segmentation.TopicSegmentation.InternalAssumption;
@@ -960,5 +962,9 @@ public class NonparametricAuthorShiftPathAssumptionSampler extends AbstractTopic
         }
         reader.close();
         return speakerTopicShiftScore;
+    }
+
+    public List<int[][]> getSampledLs() {
+        return sampledLs;
     }
 }

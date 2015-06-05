@@ -3,6 +3,8 @@ package segmentation;
 import core.AbstractExperiment;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -43,6 +45,7 @@ public class TopicSegmentation extends AbstractExperiment {
     protected static int[][] documents;
     protected static int[] authors;
     protected static String[] conversation_names;
+    protected static List<Integer> segmentNums;
     protected static String[] texts;
     protected static int[] turn_indices;
     protected static int[] groundtruth_segments;
@@ -91,6 +94,7 @@ public class TopicSegmentation extends AbstractExperiment {
         if (verbose) {
             System.out.println("--- Loading data from " + datasetName + " ...");
         }
+        segmentNums = new SegmentNumReader(IOUtils.getBufferedReader(path + ".segment")).read();
 
         Scanner word_scanner = new Scanner(new File(path + ".words"));
         Scanner author_scanner = new Scanner(new File(path + ".authors"));
@@ -355,6 +359,16 @@ public class TopicSegmentation extends AbstractExperiment {
 
         sampler.outputHyperparameters(nonparametricSamplerFolder + "hyperparameters.txt");
         IOUtils.outputTopWords(sampler.getPhi(), word_vocab, 20, nonparametricSamplerFolder + "topwords.txt");
+        outputSegment(IOUtils.getBufferedWriter(nonparametricSamplerFolder + "result.segment"), sampler.getSampledLs());
+    }
+
+    void outputSegment(Writer writer, List<int[][]> sampledLs) throws IOException {
+        new CorpusSegmentWriter(
+                writer,
+                segmentNums,
+                sampledLs,
+                new DocNameConverter(conversation_names).convert()
+        ).write();
     }
 
     @Override
