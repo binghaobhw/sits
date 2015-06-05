@@ -3,6 +3,8 @@ package segmentation;
 import core.AbstractExperiment;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -357,6 +359,16 @@ public class TopicSegmentation extends AbstractExperiment {
 
         sampler.outputHyperparameters(nonparametricSamplerFolder + "hyperparameters.txt");
         IOUtils.outputTopWords(sampler.getPhi(), word_vocab, 20, nonparametricSamplerFolder + "topwords.txt");
+        outputSegment(IOUtils.getBufferedWriter(nonparametricSamplerFolder + "result.segment"), sampler.getSampledLs());
+    }
+
+    void outputSegment(Writer writer, List<int[][]> sampledLs) throws IOException {
+        new CorpusSegmentWriter(
+                writer,
+                segmentNums,
+                sampledLs,
+                new DocNameConverter(conversation_names).convert()
+        ).write();
     }
 
     @Override
