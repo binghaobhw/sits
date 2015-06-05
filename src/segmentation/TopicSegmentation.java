@@ -43,6 +43,7 @@ public class TopicSegmentation extends AbstractExperiment {
     protected static int[][] documents;
     protected static int[] authors;
     protected static String[] conversation_names;
+    protected static List<Integer> segmentNums;
     protected static String[] texts;
     protected static int[] turn_indices;
     protected static int[] groundtruth_segments;
@@ -91,6 +92,7 @@ public class TopicSegmentation extends AbstractExperiment {
         if (verbose) {
             System.out.println("--- Loading data from " + datasetName + " ...");
         }
+        segmentNums = new SegmentNumReader(IOUtils.getBufferedReader(path + ".segment")).read();
 
         Scanner word_scanner = new Scanner(new File(path + ".words"));
         Scanner author_scanner = new Scanner(new File(path + ".authors"));
