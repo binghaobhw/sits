@@ -193,7 +193,12 @@ public class TopicSegmentation extends AbstractExperiment {
             int linecount = 0;
             while ((line = reader.readLine()) != null) {
                 if (!line.equals("")) {
-                    texts[linecount] = line.split("\t")[2];
+                    String[] parts = line.split("\t");
+                    if (parts.length > 2) {
+                        texts[linecount] = parts[2];
+                    } else {
+                        texts[linecount] = "";
+                    }
                 }
                 linecount++;
             }
