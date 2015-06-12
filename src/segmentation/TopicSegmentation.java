@@ -2,6 +2,7 @@ package segmentation;
 
 import core.AbstractExperiment;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -364,16 +365,17 @@ public class TopicSegmentation extends AbstractExperiment {
 
         sampler.outputHyperparameters(nonparametricSamplerFolder + "hyperparameters.txt");
         IOUtils.outputTopWords(sampler.getPhi(), word_vocab, 20, nonparametricSamplerFolder + "topwords.txt");
-        outputSegment(IOUtils.getBufferedWriter(nonparametricSamplerFolder + "result.segment"), sampler.getSampledLs());
+        BufferedWriter writer = IOUtils.getBufferedWriter(nonparametricSamplerFolder + "result.segment");
+        outputSegment(writer, sampler.getSampledLs());
+        writer.close();
     }
 
     void outputSegment(Writer writer, List<int[][]> sampledLs) throws IOException {
-        new CorpusSegmentWriter(
-                writer,
-                segmentNums,
-                sampledLs,
-                new DocNameConverter(conversation_names).convert()
-        ).write();
+        List<List<Integer>> topicShiftSamples = new SampleAdder(sampledLs).add();
+        List<List<Integer>> segmentSamples = new CorpusSegmentSampleConverter(topicShiftSamples).convert();
+        List<List<Integer>> segments = new CorpusSegmentExtractor(segmentSamples, segmentNums).extract();
+        List<String> names = new DocNameConverter(conversation_names).convert();
+        new CorpusSegmentWriter(writer, segments, names).write();
     }
 
     @Override

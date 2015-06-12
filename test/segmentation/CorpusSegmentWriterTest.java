@@ -15,17 +15,14 @@ public class CorpusSegmentWriterTest {
     @Test
     public void testWrite() throws IOException {
         Writer writer = new StringWriter();
-        List<Integer> segmentNums = Arrays.asList(3, 2);
-        List<int[][]> sampledLs = Arrays.asList(
-                new int[][]{new int[]{1, 0, 0, 1, 0, 0, 1, 1, 0}, new int[]{1, 0, 1, 1, 0}},
-                new int[][]{new int[]{1, 0, 0, 1, 0, 0, 1, 0, 0}, new int[]{1, 0, 1, 0, 0}},
-                new int[][]{new int[]{1, 0, 0, 1, 0, 0, 0, 1, 0}, new int[]{1, 0, 0, 1, 0}},
-                new int[][]{new int[]{1, 0, 1, 0, 0, 0, 1, 0, 0}, new int[]{1, 0, 0, 0, 0}}
+        List<List<Integer>> segments = Arrays.asList(
+                Arrays.asList(2, 5, 8),
+                Arrays.asList(0, 2, 4)
         );
-        List<String> docNames = Arrays.asList("a", "b");
+        List<String> names = Arrays.asList("a", "b");
         String expected = "a 9 3 2,5,8\n" +
-                "b 5 2 1,4\n";
-        new CorpusSegmentWriter(writer, segmentNums, sampledLs, docNames).write();
+                "b 5 3 0,2,4\n";
+        new CorpusSegmentWriter(writer, segments, names).write();
         assertEquals(expected, writer.toString());
     }
 }
