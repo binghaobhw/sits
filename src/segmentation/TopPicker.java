@@ -25,7 +25,7 @@ public class TopPicker<T> {
     }
 
     public List<T> pick() {
-        if (source == null || source.size() == 0) {
+        if (source == null || source.size() == 0 || number == 0) {
             return new ArrayList<>();
         }
         PriorityQueue<T> minHeap = new PriorityQueue<>(number, comparator);
